@@ -43,5 +43,7 @@ func (e *env) RestyCli() *resty.Client {
 }
 
 func (e *env) Stop(ctx context.Context) {
-	e.storageCli.Disconnect(ctx)
+	if e.storageCli != nil {
+		e.storageCli.Disconnect(ctx)
+	}
 }

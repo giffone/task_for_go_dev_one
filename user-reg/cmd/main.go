@@ -17,8 +17,7 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	defer app.Stop(ctx)
-	err = app.Start()
+	err = app.Start(ctx)
 	if err != nil {
 		log.Fatalln(err)
 	}

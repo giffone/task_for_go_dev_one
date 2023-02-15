@@ -4,6 +4,9 @@ import (
 	"context"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
 	"user-reg/config"
 	"user-reg/controller"
 
@@ -12,8 +15,7 @@ import (
 )
 
 type Server interface {
-	Start() error
-	Stop(ctx context.Context)
+	Start(ctx context.Context) error
 }
 
 func NewSrv(cfg *config.Cfg, env Envoriment, ctl controller.Controller) Server {
@@ -35,15 +37,31 @@ type server struct {
 	env Envoriment
 }
 
-func (s *server) Start() error {
-	log.Printf("starting at port: %s\n", s.cfg.Addr)
-	return http.ListenAndServe(s.cfg.Addr, s.r)
+func (s *server) Start(ctx context.Context) error {
+	defer s.Stop(ctx)
+
+	chQuit := make(chan os.Signal, 1)
+	chErr := make(chan error, 1)
+	signal.Notify(chQuit, syscall.SIGINT, syscall.SIGTERM)
+
+	go func() {
+		log.Printf("starting at port: %s\n", s.cfg.Addr)
+		chErr <- http.ListenAndServe(s.cfg.Addr, s.r)
+	}()
+
+	select {
+	case err := <-chErr:
+		return err
+	case quit := <-chQuit:
+		log.Printf("server stopped by \"%s\" signal\n", quit)
+	}
+	return nil
 }
 
 func (s *server) Stop(ctx context.Context) {
-	log.Println("stopping server")
+	log.Println("gracefully stop server")
 	s.env.Stop(ctx)
-
+	log.Println("gracefully stop server... done")
 }
 
 func (s *server) registerCtl() {

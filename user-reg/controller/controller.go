@@ -114,7 +114,7 @@ func (c *ctl) GetUser(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-	c.response(w, http.StatusCreated, user)
+	c.response(w, http.StatusOK, user)
 }
 
 func (c *ctl) response(w http.ResponseWriter, status int, respBody any) {
