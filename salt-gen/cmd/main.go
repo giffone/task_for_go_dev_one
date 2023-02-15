@@ -10,7 +10,7 @@ var saltLength int = 12
 
 func main() {
 	var addr string
-	flag.StringVar(&addr, "addr", ":8080", "port address")
+	flag.StringVar(&addr, "addr", "", "port address")
 	flag.Parse()
 
 	app := app.NewApp(saltLength)
