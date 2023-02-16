@@ -3,6 +3,7 @@ package config
 import (
 	"errors"
 	"flag"
+	"log"
 )
 
 // "mongodb://localhost:27017"
@@ -30,5 +31,6 @@ func (c *Cfg) validate() error {
 	if c.UrlSalt == "" {
 		return errors.New("cfg: empty urlSalt")
 	}
+	log.Printf("\n[addr] %s\n[storageAddr] %s\n[urlSalt] %s\n", c.Addr, c.StorageAddr, c.UrlSalt)
 	return nil
 }

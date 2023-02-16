@@ -1,0 +1,34 @@
+version: "3"
+services:
+  salt-gen:
+    build: ./salt-gen
+    restart: always
+    ports:
+      - "8001:8080"
+    networks:
+      - web_app
+  user-reg:
+    build: ./user-reg
+    restart: always
+    ports:
+      - "8002:8080"
+    networks:
+      - web_app
+    depends_on:
+      - mongo-db
+  mongo-db:
+    image: mongo:latest
+    restart: always
+    command: mongod --port 27030
+    ports:
+      - "8003:27030"
+    networks:
+      - web_app
+    volumes:
+      - mongo_data_container:/data/db
+networks:
+  web_app:
+    driver: bridge
+volumes:
+  mongo_data_container:
+    driver: local
