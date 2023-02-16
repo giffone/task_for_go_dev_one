@@ -3,7 +3,6 @@ package storage
 import (
 	"context"
 	"fmt"
-	"log"
 	"user-reg/model"
 	"user-reg/service"
 
@@ -37,7 +36,6 @@ func (s *storage) GetUserByEmail(ctx context.Context, email string) (*model.User
 		},
 	}
 	if err := s.users.FindOne(ctx, filter).Decode(&user); err != nil {
-		log.Println("logging: %s", err)
 		return nil, err
 	}
 	return &user, nil
