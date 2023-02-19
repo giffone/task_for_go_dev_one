@@ -2,6 +2,7 @@ version: "3"
 services:
   salt-gen:
     build: ./salt-gen
+    command: ["./main", "-addr=:8080"]
     restart: always
     ports:
       - "8001:8080"
@@ -9,6 +10,7 @@ services:
       - web_app
   user-reg:
     build: ./user-reg
+    command: ["./main", "-addr=:8080", "-storageAddr=mongodb://mongo-db:27017", "-urlSalt=http://salt-gen:8080/generate-salt"]
     restart: always
     ports:
       - "8002:8080"
@@ -19,9 +21,9 @@ services:
   mongo-db:
     image: mongo:latest
     restart: always
-    command: mongod --port 27030
+    # command: mongod --port 27030
     ports:
-      - "8003:27030"
+      - "8003:27017"
     networks:
       - web_app
     volumes:

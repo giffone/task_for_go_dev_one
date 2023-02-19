@@ -1,4 +1,4 @@
-FROM golang:1.19-bullseye
+FROM golang:1.19.6-alpine
 
 ENV PACKAGE_PATH=/web
 WORKDIR $PACKAGE_PATH
@@ -10,5 +10,3 @@ RUN go mod download
 COPY . .
 
 RUN go build cmd/main.go
-
-ENTRYPOINT ["./main", "-addr=:8080", "-storageAddr=mongodb://mongo-db:27030", "-urlSalt=http://salt-gen:8080/generate-salt"]

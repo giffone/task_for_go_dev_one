@@ -7,7 +7,6 @@ import (
 	"user-reg/service"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -29,12 +28,7 @@ func (s *storage) CreateUser(ctx context.Context, user *model.CreateUser) error 
 
 func (s *storage) GetUserByEmail(ctx context.Context, email string) (*model.User, error) {
 	var user model.User
-	filter := bson.D{
-		primitive.E{
-			Key:   "email",
-			Value: email,
-		},
-	}
+	filter := bson.M{"email": email}
 	if err := s.users.FindOne(ctx, filter).Decode(&user); err != nil {
 		return nil, err
 	}
